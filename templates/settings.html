@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>设置 - DanPlay</title>
+    <link rel="stylesheet" href="/static/css/modern.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* 设置页面专用样式 */
+        .settings-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+            min-height: 500px;
+        }
+
+        /* 侧边栏 */
+        .settings-sidebar {
+            background: rgba(248, 250, 252, 0.5);
+            border-radius: 16px;
+            padding: 1.5rem;
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+
+        .sidebar-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .nav-item:hover {
+            background: rgba(99, 102, 241, 0.1);
+            color: #6366f1;
+            transform: translateX(4px);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.15));
+            color: #6366f1;
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            font-size: 1.25rem;
+        }
+
+        /* 内容区 */
+        .settings-content {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+        }
+
+        .content-header {
+            margin-bottom: 2rem;
+        }
+
+        .content-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .content-description {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        /* 设置组 */
+        .setting-group {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .setting-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .setting-info {
+            flex: 1;
+            margin-right: 2rem;
+        }
+
+        .setting-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+            font-size: 0.95rem;
+        }
+
+        .setting-description {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        /* 开关组件 */
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            background: #cbd5e1;
+            border-radius: 13px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch input {
+            display: none;
+        }
+
+        .toggle-switch .toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            transform: translateX(22px);
+        }
+
+        .toggle-switch.checked {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        }
+
+        /* 选择框 */
+        .select-box {
+            position: relative;
+            min-width: 200px;
+        }
+
+        .select-box select {
+            width: 100%;
+            padding: 0.5rem 2.5rem 0.5rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+            color: #1e293b;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            appearance: none;
+            transition: all 0.2s;
+        }
+
+        .select-box select:hover {
+            border-color: #cbd5e1;
+        }
+
+        .select-box select:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+
+        .select-box::after {
+            content: '▼';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #64748b;
+            font-size: 0.75rem;
+        }
+
+        /* 滑块 */
+        .slider-container {
+            min-width: 200px;
+        }
+
+        .slider-value {
+            text-align: right;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #6366f1;
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #e2e8f0;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+        }
+
+        /* 输入框 */
+        .input-field {
+            min-width: 200px;
+        }
+
+        .input-field input {
+            width: 100%;
+            padding: 0.5rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .input-field input:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+
+        /* 按钮组 */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .settings-container {
+                grid-template-columns: 1fr;
+            }
+
+            .settings-sidebar {
+                position: static;
+            }
+
+            .setting-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .setting-info {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>DanPlay</h1>
+            <p>系统设置与偏好配置</p>
+            <nav class="nav-bar">
+                <a href="/" class="nav-link">播放器</a>
+                <a href="/settings" class="nav-link active">设置</a>
+                <a href="/docs" class="nav-link" target="_blank">开发文档</a>
+            </nav>
+        </header>
+
+        <main>
+            <div class="settings-container">
+                <!-- 侧边栏 -->
+                <div class="settings-sidebar">
+                    <div class="sidebar-title">设置选项</div>
+                    <div class="nav-item active" data-section="general">
+                        <span class="nav-icon">⚙️</span>
+                        <span>常规</span>
+                    </div>
+                    <div class="nav-item" data-section="player">
+                        <span class="nav-icon">▶️</span>
+                        <span>播放器</span>
+                    </div>
+                    <div class="nav-item" data-section="danmaku">
+                        <span class="nav-icon">💬</span>
+                        <span>弹幕</span>
+                    </div>
+                    <div class="nav-item" data-section="network">
+                        <span class="nav-icon">🌐</span>
+                        <span>网络</span>
+                    </div>
+                    <div class="nav-item" data-section="advanced">
+                        <span class="nav-icon">🚀</span>
+                        <span>高级</span>
+                    </div>
+                    <div class="nav-item" data-section="about">
+                        <span class="nav-icon">ℹ️</span>
+                        <span>关于</span>
+                    </div>
+                </div>
+
+                <!-- 内容区 -->
+                <div class="settings-content">
+                    <!-- 常规设置 -->
+                    <div id="general-section" class="settings-section">
+                        <div class="content-header">
+                            <h2 class="content-title">常规设置</h2>
+                            <p class="content-description">调整应用的基本行为和外观</p>
+                        </div>
+
+                        <div class="setting-group">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">界面主题</div>
+                                    <div class="setting-description">选择你喜欢的颜色主题</div>
+                                </div>
+                                <div class="select-box">
+                                    <select id="theme-select">
+                                        <option value="auto">跟随系统</option>
+                                        <option value="light">始终浅色</option>
+                                        <option value="dark">始终深色</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">界面语言</div>
+                                    <div class="setting-description">选择界面显示语言</div>
+                                </div>
+                                <div class="select-box">
+                                    <select id="language-select">
+                                        <option value="zh-CN">简体中文</option>
+                                        <option value="zh-TW">繁體中文</option>
+                                        <option value="en">English</option>
+                                        <option value="ja">日本語</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">自动匹配弹幕</div>
+                                    <div class="setting-description">上传视频后自动搜索匹配的弹幕</div>
+                                </div>
+                                <label class="toggle-switch checked" data-setting="general.autoMatch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">保存播放历史</div>
+                                    <div class="setting-description">记录你的观看历史和进度</div>
+                                </div>
+                                <label class="toggle-switch checked" data-setting="general.saveHistory">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 播放器设置 -->
+                    <div id="player-section" class="settings-section" style="display: none;">
+                        <div class="content-header">
+                            <h2 class="content-title">播放器设置</h2>
+                            <p class="content-description">自定义视频播放体验</p>
+                        </div>
+
+                        <div class="setting-group">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">默认播放器内核</div>
+                                    <div class="setting-description">选择你喜欢的播放器</div>
+                                </div>
+                                <div class="select-box">
+                                    <select id="player-select">
+                                        <option value="native">原生 HTML5</option>
+                                        <option value="nplayer">NPlayer</option>
+                                        <option value="artplayer">ArtPlayer</option>
+                                        <option value="dplayer">DPlayer</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">默认音量</div>
+                                    <div class="setting-description">设置视频的初始音量</div>
+                                </div>
+                                <div class="slider-container">
+                                    <div class="slider-value">80%</div>
+                                    <input type="range" class="slider" min="0" max="100" value="80" id="volume-slider">
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">自动播放</div>
+                                    <div class="setting-description">视频加载完成后自动开始播放</div>
+                                </div>
+                                <label class="toggle-switch" data-setting="player.autoPlay">
+                                    <input type="checkbox">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">记忆播放位置</div>
+                                    <div class="setting-description">下次继续上次的播放进度</div>
+                                </div>
+                                <label class="toggle-switch checked" data-setting="player.rememberPosition">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 弹幕设置 -->
+                    <div id="danmaku-section" class="settings-section" style="display: none;">
+                        <div class="content-header">
+                            <h2 class="content-title">弹幕设置</h2>
+                            <p class="content-description">调整弹幕显示效果</p>
+                        </div>
+
+                        <div class="setting-group">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">弹幕透明度</div>
+                                    <div class="setting-description">调整弹幕的透明程度</div>
+                                </div>
+                                <div class="slider-container">
+                                    <div class="slider-value">100%</div>
+                                    <input type="range" class="slider" min="0" max="100" value="100" id="opacity-slider">
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">弹幕字号</div>
+                                    <div class="setting-description">选择合适的弹幕大小</div>
+                                </div>
+                                <div class="select-box">
+                                    <select id="danmaku-size">
+                                        <option value="small">小号</option>
+                                        <option value="medium" selected>中号</option>
+                                        <option value="large">大号</option>
+                                        <option value="xlarge">特大号</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">弹幕速度</div>
+                                    <div class="setting-description">控制弹幕滚动的快慢</div>
+                                </div>
+                                <div class="select-box">
+                                    <select id="danmaku-speed">
+                                        <option value="slow">慢速</option>
+                                        <option value="normal" selected>正常</option>
+                                        <option value="fast">快速</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">智能防挡</div>
+                                    <div class="setting-description">避免弹幕遮挡字幕区域</div>
+                                </div>
+                                <label class="toggle-switch" data-setting="danmaku.smartBlock">
+                                    <input type="checkbox">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 网络设置 -->
+                    <div id="network-section" class="settings-section" style="display: none;">
+                        <div class="content-header">
+                            <h2 class="content-title">网络设置</h2>
+                            <p class="content-description">配置API和代理选项</p>
+                        </div>
+
+                        <div class="setting-group">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">API 服务器</div>
+                                    <div class="setting-description">弹弹Play API 地址</div>
+                                </div>
+                                <div class="input-field">
+                                    <input type="text" value="https://api.dandanplay.net/api/v2">
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">使用代理</div>
+                                    <div class="setting-description">通过代理服务器访问API</div>
+                                </div>
+                                <label class="toggle-switch checked">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">启用缓存</div>
+                                    <div class="setting-description">缓存匹配结果以提升性能</div>
+                                </div>
+                                <label class="toggle-switch checked">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 高级设置 -->
+                    <div id="advanced-section" class="settings-section" style="display: none;">
+                        <div class="content-header">
+                            <h2 class="content-title">高级设置</h2>
+                            <p class="content-description">专业用户选项</p>
+                        </div>
+
+                        <div class="setting-group">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">硬件加速</div>
+                                    <div class="setting-description">使用GPU加速视频解码</div>
+                                </div>
+                                <label class="toggle-switch checked">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">调试模式</div>
+                                    <div class="setting-description">在控制台输出详细日志</div>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="button-group">
+                                <button class="btn btn-secondary">导出设置</button>
+                                <button class="btn btn-secondary">导入设置</button>
+                                <button class="btn btn-danger">重置所有</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 关于 -->
+                    <div id="about-section" class="settings-section" style="display: none;">
+                        <div class="content-header">
+                            <h2 class="content-title">关于 DanPlay</h2>
+                            <p class="content-description">版本信息与致谢</p>
+                        </div>
+
+                        <div class="setting-group">
+                            <div style="text-align: center; padding: 2rem;">
+                                <div style="font-size: 4rem; margin-bottom: 1rem;">🎬</div>
+                                <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">DanPlay v1.0.0</h3>
+                                <p style="color: #64748b; margin-bottom: 2rem;">一个现代化的弹幕视频播放器</p>
+                                
+                                <div style="margin-bottom: 2rem;">
+                                    <p style="margin-bottom: 0.5rem;">基于以下开源项目：</p>
+                                    <p style="color: #64748b;">FastAPI • Vue.js • NPlayer • ArtPlayer</p>
+                                </div>
+
+                                <div style="margin-bottom: 2rem;">
+                                    <p style="margin-bottom: 0.5rem;">特别感谢：</p>
+                                    <p style="color: #64748b;">弹弹play 开放平台</p>
+                                </div>
+
+                                <div class="button-group" style="justify-content: center;">
+                                    <button class="btn btn-primary" onclick="window.open('https://www.dandanplay.com/', '_blank')">弹弹play 官网</button>
+                                    <button class="btn btn-secondary" onclick="window.open('/docs', '_blank')">API 文档</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 保存按钮 -->
+                    <div class="button-group" style="justify-content: flex-end; padding-top: 2rem; border-top: 1px solid #e2e8f0;">
+                        <button class="btn btn-secondary" onclick="window.location.href='/'">取消</button>
+                        <button class="btn btn-primary" onclick="saveSettings()">保存更改</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>DanPlay © 2024 • 用❤️打造</p>
+        </footer>
+    </div>
+
+    <!-- 引入设置管理器 -->
+    <script src="/static/js/settings-manager.js"></script>
+    
+    <script>
+        // 初始化设置页面
+        class SettingsPageController {
+            constructor() {
+                this.manager = window.settingsManager;
+                this.initializeUI();
+                this.loadCurrentSettings();
+                this.bindEvents();
+            }
+
+            initializeUI() {
+                // 切换设置页面
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.addEventListener('click', function() {
+                        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        const section = this.dataset.section;
+                        document.querySelectorAll('.settings-section').forEach(sec => sec.style.display = 'none');
+                        document.getElementById(`${section}-section`).style.display = 'block';
+                    });
+                });
+            }
+
+            loadCurrentSettings() {
+                // 加载常规设置
+                const themeSelect = document.getElementById('theme-select');
+                if (themeSelect) themeSelect.value = this.manager.get('general.theme');
+                
+                const languageSelect = document.getElementById('language-select');
+                if (languageSelect) languageSelect.value = this.manager.get('general.language');
+                
+                // 加载播放器设置
+                const playerSelect = document.getElementById('player-select');
+                if (playerSelect) playerSelect.value = this.manager.get('player.engine');
+                
+                const volumeSlider = document.getElementById('volume-slider');
+                if (volumeSlider) {
+                    volumeSlider.value = this.manager.get('player.defaultVolume');
+                    volumeSlider.parentElement.querySelector('.slider-value').textContent = volumeSlider.value + '%';
+                }
+                
+                // 加载弹幕设置
+                const opacitySlider = document.getElementById('opacity-slider');
+                if (opacitySlider) {
+                    opacitySlider.value = this.manager.get('danmaku.opacity');
+                    opacitySlider.parentElement.querySelector('.slider-value').textContent = opacitySlider.value + '%';
+                }
+                
+                const danmakuSize = document.getElementById('danmaku-size');
+                if (danmakuSize) danmakuSize.value = this.manager.get('danmaku.fontSize');
+                
+                const danmakuSpeed = document.getElementById('danmaku-speed');
+                if (danmakuSpeed) danmakuSpeed.value = this.manager.get('danmaku.speed');
+                
+                // 加载开关状态
+                this.loadToggleStates();
+            }
+
+            loadToggleStates() {
+                // 自动匹配弹幕
+                const autoMatchToggle = document.querySelector('[data-setting="general.autoMatch"]');
+                if (autoMatchToggle) {
+                    const input = autoMatchToggle.querySelector('input');
+                    input.checked = this.manager.get('general.autoMatch');
+                    autoMatchToggle.classList.toggle('checked', input.checked);
+                }
+                
+                // 保存播放历史
+                const saveHistoryToggle = document.querySelector('[data-setting="general.saveHistory"]');
+                if (saveHistoryToggle) {
+                    const input = saveHistoryToggle.querySelector('input');
+                    input.checked = this.manager.get('general.saveHistory');
+                    saveHistoryToggle.classList.toggle('checked', input.checked);
+                }
+                
+                // 自动播放
+                const autoPlayToggle = document.querySelector('[data-setting="player.autoPlay"]');
+                if (autoPlayToggle) {
+                    const input = autoPlayToggle.querySelector('input');
+                    input.checked = this.manager.get('player.autoPlay');
+                    autoPlayToggle.classList.toggle('checked', input.checked);
+                }
+                
+                // 记忆播放位置
+                const rememberToggle = document.querySelector('[data-setting="player.rememberPosition"]');
+                if (rememberToggle) {
+                    const input = rememberToggle.querySelector('input');
+                    input.checked = this.manager.get('player.rememberPosition');
+                    rememberToggle.classList.toggle('checked', input.checked);
+                }
+            }
+
+            bindEvents() {
+                // 主题选择
+                document.getElementById('theme-select')?.addEventListener('change', (e) => {
+                    this.manager.set('general.theme', e.target.value);
+                });
+                
+                // 语言选择
+                document.getElementById('language-select')?.addEventListener('change', (e) => {
+                    this.manager.set('general.language', e.target.value);
+                });
+                
+                // 播放器选择
+                document.getElementById('player-select')?.addEventListener('change', (e) => {
+                    this.manager.set('player.engine', e.target.value);
+                });
+                
+                // 音量滑块
+                document.getElementById('volume-slider')?.addEventListener('input', (e) => {
+                    const value = parseInt(e.target.value);
+                    e.target.parentElement.querySelector('.slider-value').textContent = value + '%';
+                    this.manager.set('player.defaultVolume', value);
+                });
+                
+                // 弹幕透明度
+                document.getElementById('opacity-slider')?.addEventListener('input', (e) => {
+                    const value = parseInt(e.target.value);
+                    e.target.parentElement.querySelector('.slider-value').textContent = value + '%';
+                    this.manager.set('danmaku.opacity', value);
+                });
+                
+                // 弹幕字号
+                document.getElementById('danmaku-size')?.addEventListener('change', (e) => {
+                    this.manager.set('danmaku.fontSize', e.target.value);
+                });
+                
+                // 弹幕速度
+                document.getElementById('danmaku-speed')?.addEventListener('change', (e) => {
+                    this.manager.set('danmaku.speed', e.target.value);
+                });
+                
+                // 开关组件
+                document.querySelectorAll('.toggle-switch input').forEach(toggle => {
+                    toggle.addEventListener('change', (e) => {
+                        const parent = e.target.parentElement;
+                        parent.classList.toggle('checked', e.target.checked);
+                        
+                        // 如果有data-setting属性，更新设置
+                        const settingPath = parent.dataset.setting;
+                        if (settingPath) {
+                            this.manager.set(settingPath, e.target.checked);
+                        }
+                    });
+                });
+                
+                // 导出设置
+                const exportBtn = Array.from(document.querySelectorAll('.btn-secondary')).find(btn => btn.textContent.includes('导出设置'));
+                if (exportBtn) {
+                    exportBtn.addEventListener('click', () => {
+                        this.manager.export();
+                        this.showNotification('设置已导出', 'success');
+                    });
+                }
+                
+                // 导入设置
+                const importBtn = Array.from(document.querySelectorAll('.btn-secondary')).find(btn => btn.textContent.includes('导入设置'));
+                if (importBtn) {
+                    importBtn.addEventListener('click', () => {
+                        const input = document.createElement('input');
+                        input.type = 'file';
+                        input.accept = '.json';
+                        input.onchange = async (e) => {
+                            const file = e.target.files[0];
+                            if (file) {
+                                const success = await this.manager.import(file);
+                                if (success) {
+                                    this.loadCurrentSettings();
+                                    this.showNotification('设置已导入', 'success');
+                                } else {
+                                    this.showNotification('导入失败', 'error');
+                                }
+                            }
+                        };
+                        input.click();
+                    });
+                }
+                
+                // 重置所有
+                const resetBtn = Array.from(document.querySelectorAll('.btn-danger')).find(btn => btn.textContent.includes('重置所有'));
+                if (resetBtn) {
+                    resetBtn.addEventListener('click', () => {
+                        if (confirm('确定要重置所有设置吗？')) {
+                            this.manager.reset();
+                            this.loadCurrentSettings();
+                            this.showNotification('设置已重置', 'info');
+                        }
+                    });
+                }
+            }
+
+            showNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.className = `notification notification-${type}`;
+                notification.textContent = message;
+                notification.style.cssText = `
+                    position: fixed;
+                    bottom: 2rem;
+                    right: 2rem;
+                    padding: 1rem 1.5rem;
+                    border-radius: 12px;
+                    color: white;
+                    font-weight: 500;
+                    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+                    animation: slideUp 0.3s ease;
+                    z-index: 9999;
+                    background: ${type === 'success' ? 'linear-gradient(135deg, #10b981, #059669)' : 
+                                 type === 'error' ? 'linear-gradient(135deg, #ef4444, #dc2626)' :
+                                 'linear-gradient(135deg, #3b82f6, #2563eb)'};
+                `;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
+        }
+
+        // 保存设置函数（供按钮调用）
+        function saveSettings() {
+            window.settingsManager.syncToServer().then(success => {
+                const message = success ? '设置已保存' : '保存失败';
+                const type = success ? 'success' : 'error';
+                controller.showNotification(message, type);
+            });
+        }
+
+        // 页面加载时初始化
+        let controller;
+        window.addEventListener('DOMContentLoaded', () => {
+            controller = new SettingsPageController();
+        });
+    </script>
+</body>
+</html>

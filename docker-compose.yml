@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  danplay:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: danplay:latest
+    container_name: danplay_app
+    restart: unless-stopped
+    ports:
+      - "${EXTERNAL_PORT:-8000}:8000"
+    volumes:
+      # 持久化数据卷
+      - ./uploads:/app/uploads
+      - ./user_settings.json:/app/user_settings.json
+      - ./logs:/app/logs
+    environment:
+      # 基础配置
+      - SECRET_KEY=${SECRET_KEY:-your-secret-key-please-change-in-production}
+      - DEBUG=${DEBUG:-false}
+      - HOST=0.0.0.0
+      - PORT=8000
+      
+      # 上传配置
+      - MAX_UPLOAD_SIZE=${MAX_UPLOAD_SIZE:-5368709120}
+      - UPLOAD_DIR=/app/uploads
+      
+      # API配置
+      - DANDAN_API_BASE_URL=${DANDAN_API_BASE_URL:-https://api.dandanplay.net/api/v2}
+      - DANDAN_PROXY_URL=${DANDAN_PROXY_URL}
+      
+      # 性能配置
+      - WORKERS=${WORKERS:-4}
+      
+    networks:
+      - danplay_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # 可选：添加Nginx反向代理
+  nginx:
+    image: nginx:alpine
+    container_name: danplay_nginx
+    restart: unless-stopped
+    ports:
+      - "${NGINX_PORT:-80}:80"
+      - "${NGINX_SSL_PORT:-443}:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./static:/usr/share/nginx/html/static:ro
+    depends_on:
+      - danplay
+    networks:
+      - danplay_network
+    profiles:
+      - with-nginx
+
+  # 可选：添加Redis缓存
+  redis:
+    image: redis:7-alpine
+    container_name: danplay_redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - danplay_network
+    profiles:
+      - with-redis
+
+networks:
+  danplay_network:
+    driver: bridge
+
+volumes:
+  redis_data:
+    driver: local

@@ -1,0 +1,77 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Git
+.git/
+.gitignore
+
+# Docker
+.dockerignore
+Dockerfile
+docker-compose.yml
+docker-compose.*.yml
+
+# Documentation
+README.md
+README_NEW.md
+docs/
+*.md
+
+# Tests
+tests/
+pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.pytest_cache/
+
+# Logs
+*.log
+logs/
+
+# Local uploads (will be mounted as volume)
+uploads/*
+!uploads/.gitkeep
+
+# User settings (will be mounted as volume)
+user_settings.json
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Node modules (if any frontend build)
+node_modules/
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml

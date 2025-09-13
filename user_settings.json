@@ -1,0 +1,39 @@
+{
+  "general": {
+    "theme": "auto",
+    "language": "zh-CN",
+    "autoMatch": true,
+    "saveHistory": true
+  },
+  "player": {
+    "engine": "native",
+    "defaultVolume": 80,
+    "autoPlay": false,
+    "rememberPosition": true
+  },
+  "danmaku": {
+    "opacity": 100,
+    "fontSize": "medium",
+    "speed": "normal",
+    "blockTop": false,
+    "blockBottom": false,
+    "blockScroll": false,
+    "smartBlock": false
+  },
+  "network": {
+    "apiServer": "https://api.dandanplay.net/api/v2",
+    "useProxy": false,
+    "proxyUrl": "",
+    "enableCache": true,
+    "cacheExpiry": 86400
+  },
+  "advanced": {
+    "hardwareAcceleration": true,
+    "debugMode": false,
+    "logLevel": "info",
+    "maxUploadSize": 500
+  },
+  "theme": "auto",
+  "language": "zh-CN",
+  "volume": "80"
+}
