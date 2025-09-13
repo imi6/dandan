@@ -334,16 +334,8 @@ docker-compose up -d
 ## 🙏 致谢
 
 - [弹弹play](https://www.dandanplay.com/) - 优秀的弹幕播放器
-- [弹弹play开放平台](https://api.dandanplay.net) - 提供API支持
 - [FastAPI](https://fastapi.tiangolo.com) - 现代Web框架
 - 所有贡献者和用户的支持
-
-## 📮 联系方式
-
-- 项目主页: [https://github.com/yourusername/danplay](https://github.com/yourusername/danplay)
-- Issue反馈: [https://github.com/yourusername/danplay/issues](https://github.com/yourusername/danplay/issues)
-- Email: your-email@example.com
-
 ---
 
 <div align="center">
